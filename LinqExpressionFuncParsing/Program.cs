@@ -14,16 +14,21 @@ namespace LinqExpressionFuncParsing
             var pExpression = funcExpression.Parameters[0]; //lambda 參數
             var body = (BinaryExpression)funcExpression.Body; //lambda 主體
 
-            Console.WriteLine($"解析?：{body.Right.Type}");
+            Console.WriteLine($"第一個右項的型別：{body.Right.Type}");
 
-            if (body.Right is BinaryExpression right)
+            if (body.Right is BinaryExpression first_right)
             {
-                Console.WriteLine($"解析?：{pExpression.Name} => {right.Left} {right.NodeType} {right.Right}");
+                Console.WriteLine($"解析第一個右項：{pExpression.Name} => {first_right.Left} {first_right.NodeType} {first_right.Right}");
             }
 
             while (body.Left is BinaryExpression left)
             {
-                Console.WriteLine($"解析：{pExpression.Name} => {body.Left} {body.NodeType} {body.Right}");
+                if (body.Right is BinaryExpression right)
+                {
+                    Console.WriteLine($"解析右項：{pExpression.Name} => {right.Left} {right.NodeType} {right.Right}");
+                }
+
+                Console.WriteLine($"完整節點：{pExpression.Name} => {body.Left} {body.NodeType} {body.Right}");
                 body = left;
             }
 
