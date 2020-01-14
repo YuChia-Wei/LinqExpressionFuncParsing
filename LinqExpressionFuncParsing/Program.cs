@@ -9,8 +9,8 @@ namespace LinqExpressionFuncParsing
         private static void Main(string[] args)
         {
             Expression<Func<TestClass, bool>> funcExpression =
-                num => num.PropertyA == "A" && num.PropertyB != 0 && num.PropertyC;
-
+                num => num.PropertyA == "A" && num.PropertyB != 0 && num.PropertyC == false;
+            
             var pExpression = funcExpression.Parameters[0]; //lambda 參數
             var body = (BinaryExpression)funcExpression.Body; //lambda 主體
 
