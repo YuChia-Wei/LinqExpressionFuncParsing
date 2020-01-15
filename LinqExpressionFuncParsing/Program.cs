@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace LinqExpressionFuncParsing
@@ -9,8 +8,8 @@ namespace LinqExpressionFuncParsing
         private static void Main(string[] args)
         {
             Expression<Func<TestClass, bool>> funcExpression =
-                num => num.PropertyA == "A" && num.PropertyB != 0 && num.PropertyC == false;
-            
+                num => num.PropertyA == "A" && num.PropertyB != 0 && !num.PropertyC;
+
             var pExpression = funcExpression.Parameters[0]; //lambda 參數
             var body = (BinaryExpression)funcExpression.Body; //lambda 主體
 
@@ -25,6 +24,16 @@ namespace LinqExpressionFuncParsing
             {
                 if (body.Right is BinaryExpression right)
                 {
+                    if (right.Left is MemberExpression member)
+                    {
+                        Console.WriteLine($"解析右項成員名稱：{member.Member.Name}");
+                    }
+
+                    if (right.Right is ConstantExpression constant)
+                    {
+                        Console.WriteLine($"解析右項內容：{constant.Value}");
+                    }
+
                     Console.WriteLine($"解析右項：{pExpression.Name} => {right.Left} {right.NodeType} {right.Right}");
                 }
 
@@ -32,8 +41,6 @@ namespace LinqExpressionFuncParsing
                 body = left;
             }
 
-            Console.WriteLine($"解析 1：{pExpression.Name} => {body.Left} {body.NodeType} {body.Right}");
-            Console.WriteLine($"解析 2：{body}");
             Console.ReadLine();
         }
 
@@ -42,7 +49,7 @@ namespace LinqExpressionFuncParsing
             Expression<Func<string, bool>> funcExpression = num => num == "A" && num != "B" && num != "C";
 
             var pExpression = funcExpression.Parameters[0]; //lambda 參數
-            var body = (BinaryExpression) funcExpression.Body; //lambda 主體
+            var body = (BinaryExpression)funcExpression.Body; //lambda 主體
 
             Console.WriteLine($"解析：{pExpression.Name} => {body.Left} {body.NodeType} {body.Right}");
             Console.WriteLine($"解析：{body}");
